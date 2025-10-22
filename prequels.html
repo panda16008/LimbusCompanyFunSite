@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limbus Company - Приквелы и Лор</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #e74c3c;
+            --text-color: #ecf0f1;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background: linear-gradient(rgba(15, 15, 26, 0.85), rgba(26, 26, 46, 0.9)), 
+                        url('./Images/Background/Background_city.png') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: calc(-1 * var(--sidebar-width));
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(26, 26, 46, 0.95);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.7);
+            border-right: 2px solid var(--accent-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 25px;
+            top: 25px;
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 80px 25px 25px;
+        }
+
+        .nav-links li {
+            margin: 20px 0;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 12px 18px;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .content {
+            padding: 30px;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(22, 33, 62, 0.8);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            margin-top: 20px;
+        }
+
+        .content.shifted {
+            margin-left: var(--sidebar-width);
+        }
+
+        h1 {
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            color: var(--accent-color);
+            margin: 25px 0 15px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 8px;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #3498db;
+            margin: 20px 0 10px;
+            font-size: 1.4em;
+        }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .timeline {
+            margin: 30px 0;
+        }
+
+        .timeline-event {
+            background: rgba(44, 62, 80, 0.7);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            border-left: 5px solid var(--accent-color);
+            backdrop-filter: blur(3px);
+            transition: transform 0.2s ease;
+        }
+
+        .timeline-event:hover {
+            transform: translateX(5px);
+        }
+
+        .event-title {
+            color: #f39c12;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .game-card {
+            background: rgba(44, 62, 80, 0.7);
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 10px;
+            border: 1px solid rgba(52, 73, 94, 0.5);
+            backdrop-filter: blur(3px);
+            transition: transform 0.2s ease;
+        }
+
+        .game-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .game-title {
+            color: #f39c12;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="prequels.html">Приквелы и Лор</a></li>
+            <li><a href="beginning.html">Начало игры</a></li>
+            <li><a href="sinners.html">Грешники</a></li>
+            <li><a href="gameplay.html">Геймплей</a></li>
+        </ul>
+    </div>
+
+    <div class="content" id="content">
+        <h1>Приквелы и История Вселенной</h1>
+        
+        <div class="game-card">
+            <div class="game-title">Lobotomy Corporation</div>
+            <p>Первая игра в серии, рассказывающая о корпорации, добывающей энергию из аномалий. События закладывают основы мира и вводят ключевые концепции.</p>
+            <p>Игрок управляет менеджером, который должен управлять аномалиями и сотрудниками, предотвращая нарушения и собирая энергию. Сюжет раскрывается через взаимодействие с сотрудниками и аномалиями.</p>
+        </div>
+
+        <div class="game-card">
+            <div class="game-title">Library of Ruina</div>
+            <p>Продолжение истории, где игроки становятся на роль бывшего цветного фиксера, который по неизвестным причинам попал в библиотеку, и становится вынужден работать там.</p>
+            <p>Библиотекарь Анджела приглашает гостей в библиотеку, где они должны сражаться за книги, содержащие знания и воспоминания. Игра сочетает карточные сражения стиль которых был передан следующей игре в серии..</p>
+        </div>
+
+        <div class="timeline">
+            <h2>Хронология событий</h2>
+            
+            <div class="timeline-event">
+                <div class="event-title">До событий Lobotomy Corporation</div>
+                <p>Формирование основных корпораций, первые случаи появления аномалий. Создание первых Сингулярностей и разделение Города на Округа.</p>
+            </div>
+            
+            <div class="timeline-event">
+                <div class="event-title">События Lobotomy Corporation</div>
+                <p>Работа с аномалиями, инциденты с бегством и подавлением угроз. Формирование основного сюжета, связанного с А и другими ключевыми персонажами.</p>
+            </div>
+            
+            <div class="timeline-event">
+                <div class="event-title">События Library of Ruina</div>
+                <p>Создание библиотеки, противостояние ансамблю. Развитие истории Анджелы, Роланда и других персонажей.</p>
+            </div>
+            
+            <div class="timeline-event">
+                <div class="event-title">Limbus Company</div>
+                <p>Поиск Золотых ветвей, раскрытие последствия предыдущих частей. Новый мир.</p>
+            </div>
+        </div>
+
+        <h2>Ключевые концепции вселенной</h2>
+        <p>Вселенная Project Moon построена на нескольких фундаментальных концепциях:</p>
+        
+        <div class="game-card">
+            <div class="game-title">Сингулярности</div>
+            <p>Уникальные технологии, разработанные Корпорациями, которые дают им невероятные возможности и власть. Каждая Корпорация обладает своей собственной Сингулярностью.</p>
+        </div>
+        
+        <div class="game-card">
+            <div class="game-title">Аномалии</div>
+            <p>Сверхъестественные существа и явления, нарушающие законы реальности. Они могут быть как опасными, так и полезными, в зависимости от контроля над ними.</p>
+        </div>
+        
+        <div class="game-card">
+            <div class="game-title">Искажения</div>
+            <p>Процесс, при котором люди превращаются в аномалии под воздействием сильных эмоций или травмирующих событий.</p>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            sidebar.classList.toggle('active');
+            content.classList.toggle('shifted');
+        }
+
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
+        });
+    </script>
+</body>
+</html>

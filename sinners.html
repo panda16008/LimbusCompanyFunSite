@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limbus Company - Грешники</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #e74c3c;
+            --text-color: #ecf0f1;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background: linear-gradient(rgba(15, 15, 26, 0.85), rgba(26, 26, 46, 0.9)), 
+                        url('./Images/Background/Background_city.png') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: calc(-1 * var(--sidebar-width));
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(26, 26, 46, 0.95);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.7);
+            border-right: 2px solid var(--accent-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 25px;
+            top: 25px;
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 80px 25px 25px;
+        }
+
+        .nav-links li {
+            margin: 20px 0;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 12px 18px;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .content {
+            padding: 30px;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(22, 33, 62, 0.8);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            margin-top: 20px;
+        }
+
+        .content.shifted {
+            margin-left: var(--sidebar-width);
+        }
+
+        h1 {
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .sinners-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .sinner-card {
+            background: rgba(34, 47, 62, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            border: 2px solid rgba(52, 73, 94, 0.5);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        .sinner-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+        }
+
+        .sinner-number {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            background: var(--accent-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .sinner-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            border: 3px solid var(--accent-color);
+            background: linear-gradient(45deg, #2c3e50, #34495e);
+        }
+
+        .sinner-name {
+            font-weight: bold;
+            margin-bottom: 8px;
+            cursor: pointer;
+            position: relative;
+            font-size: 1.2em;
+            color: #f39c12;
+        }
+
+        .book-reference {
+            display: none;
+            position: absolute;
+            background: rgba(26, 26, 46, 0.95);
+            padding: 12px 15px;
+            border-radius: 8px;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            z-index: 10;
+            border: 2px solid var(--accent-color);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            backdrop-filter: blur(5px);
+        }
+
+        .sinner-name:hover .book-reference {
+            display: block;
+        }
+
+        .sinner-description {
+            font-size: 0.9em;
+            color: #bdc3c7;
+            margin-top: 8px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="prequels.html">Приквелы и Лор</a></li>
+            <li><a href="beginning.html">Начало игры</a></li>
+            <li><a href="sinners.html">Грешники</a></li>
+            <li><a href="gameplay.html">Геймплей</a></li>
+        </ul>
+    </div>
+
+    <div class="content" id="content">
+        <h1>Грешники</h1>
+        
+        <div class="sinners-grid">
+            <!-- И Сан -->
+            <div class="sinner-card">
+                <div class="sinner-number">1</div>
+                <img src="./Images/Icons/Yisang_id_photo.png" class="sinner-icon" alt="И Сан">
+                <div class="sinner-name">
+                    И Сан
+                    <div class="book-reference">"Крылья" И сан</div>
+                </div>
+                <div class="sinner-description">Слышали о гении, который стал чучелом?</div>
+            </div>
+
+            <!-- Фауст -->
+            <div class="sinner-card">
+                <div class="sinner-number">2</div>
+                <img src="./Images/Icons/Faust_id_photo.png" class="sinner-icon" alt="Фауст">
+                <div class="sinner-name">
+                    Фауст
+                    <div class="book-reference">"Фауст" Иоганн Гёте</div>
+                </div>
+                <div class="sinner-description">Человек склонен к заблуждениям.</div>
+            </div>
+
+            <!-- Дон Кихот -->
+            <div class="sinner-card">
+                <div class="sinner-number">3</div>
+                <img src="./Images/Icons/DonQuixodPic.png" class="sinner-icon" alt="Дон Кихот">
+                <div class="sinner-name">
+                    Дон Кихот
+                    <div class="book-reference">"Дон Кихот" Мигель Сервантес</div>
+                </div>
+                <div class="sinner-description">Достичь недостижимой звезды!</div>
+            </div>
+
+            <!-- Рёсю -->
+            <div class="sinner-card">
+                <div class="sinner-number">4</div>
+                <img src="./Images/Icons/Ryoshu_id_photo.png" class="sinner-icon" alt="Рёсю">
+                <div class="sinner-name">
+                    Рёсю
+                    <div class="book-reference">"Ширма дьявола"</div>
+                </div>
+                <div class="sinner-description">Да, всем этим художникам-верхоглядам не понять красоты уродства!</div>
+            </div>
+
+            <!-- Мерсо -->
+            <div class="sinner-card">
+                <div class="sinner-number">5</div>
+                <img src="./Images/Icons/Meursault_id_photo.png" class="sinner-icon" alt="Мерсо">
+                <div class="sinner-name">
+                    Мерсо
+                    <div class="book-reference">"Посторонний" Альбер Камю</div>
+                </div>
+                <div class="sinner-description">Сегодня я убил мать. Или, быть может, это было вчера.</div>
+            </div>
+
+            <!-- Хун Лу -->
+            <div class="sinner-card">
+                <div class="sinner-number">6</div>
+                <img src="./Images/Icons/Honglu_id_photo.png" class="sinner-icon" alt="Хун Лу">
+                <div class="sinner-name">
+                    Хун Лу
+                    <div class="book-reference">"Сон в красном тереме" Цао Сюэцинь</div>
+                </div>
+                <div class="sinner-description">Как нефрит может быть с изъяном, так и наша жизнь имеет свои превратности.</div>
+            </div>
+
+            <!-- Хитклифф -->
+            <div class="sinner-card">
+                <div class="sinner-number">7</div>
+                <img src="./Images/Icons/Heathcliff_id_photo.png" class="sinner-icon" alt="Хитклифф">
+                <div class="sinner-name">
+                    Хитклифф
+                    <div class="book-reference">"Грозовой перевал" Эмили Бронте</div>
+                </div>
+                <div class="sinner-description">Не я разбил твоё сердце - его разбила ты; и, разбив его, разбила и моё..</div>
+            </div>
+
+            <!-- Измаил -->
+            <div class="sinner-card">
+                <div class="sinner-number">8</div>
+                <img src="./Images/Icons/Ishmael_id_photo.png" class="sinner-icon" alt="Измаил">
+                <div class="sinner-name">
+                    Измаил
+                    <div class="book-reference">"Моби Дик" Герман Мелвилл</div>
+                </div>
+                <div class="sinner-description">Можете звать меня Измаил.</div>
+            </div>
+
+            <!-- Родион -->
+            <div class="sinner-card">
+                <div class="sinner-number">9</div>
+                <img src="./Images/Icons/Rodion_id_photo.png" class="sinner-icon" alt="Родион">
+                <div class="sinner-name">
+                    Родион
+                    <div class="book-reference">"Преступление и наказание" Ф.М. Достоевский</div>
+                </div>
+                <div class="sinner-description">Если бы только она могла забыть обо всём и начать с чистого листа.</div>
+            </div>
+
+            <!-- Данте -->
+            <div class="sinner-card">
+                <div class="sinner-number">10</div>
+                <img src="./Images/Icons/Danceprep13.png" class="sinner-icon" alt="Данте">
+                <div class="sinner-name">
+                    Данте
+                    <div class="book-reference">"Божественная комедия" Данте Алигьери</div>
+                </div>
+                <div class="sinner-description">Оставьте надежду все, кто сюда входит.</div>
+            </div>
+
+            <!-- Эмиль Синклер -->
+            <div class="sinner-card">
+                <div class="sinner-number">11</div>
+                <img src="./Images/Icons/Sinclair_id_photo.png" class="sinner-icon" alt="Эмиль Синклер">
+                <div class="sinner-name">
+                    Эмиль Синклер
+                    <div class="book-reference">"Демиан" Герман Гессе</div>
+                </div>
+                <div class="sinner-description">Однако, мир, полный зла, уже дал корни прямо здесь, посреди нашего дома.</div>
+            </div>
+
+            <!-- Утис -->
+            <div class="sinner-card">
+                <div class="sinner-number">12</div>
+                <img src="./Images/Icons/Outis_id_photo.png" class="sinner-icon" alt="Оутис">
+                <div class="sinner-name">
+                    Утис
+                    <div class="book-reference">"Одиссея" Гомер</div>
+                </div>
+                <div class="sinner-description">Я... в сущности своей никто.</div>
+            </div>
+
+            <!-- Грегор -->
+            <div class="sinner-card">
+                <div class="sinner-number">13</div>
+                <img src="./Images/Icons/Gregor_id_photo.png" class="sinner-icon" alt="Грегор">
+                <div class="sinner-name">
+                    Грегор
+                    <div class="book-reference">"Превращение" Франц Кафка</div>
+                </div>
+                <div class="sinner-description">Проснувшись однажды утром от беспокойного сна, я обнаружил, что превратился в ужасное создание.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            sidebar.classList.toggle('active');
+            content.classList.toggle('shifted');
+        }
+
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
+        });
+    </script>
+</body>
+</html>

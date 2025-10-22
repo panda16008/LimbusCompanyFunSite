@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limbus Company - Начало игры</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #e74c3c;
+            --text-color: #ecf0f1;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background: linear-gradient(rgba(15, 15, 26, 0.85), rgba(26, 26, 46, 0.9)), 
+                        url('./Images/Background/Background_city.png') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: calc(-1 * var(--sidebar-width));
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(26, 26, 46, 0.95);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.7);
+            border-right: 2px solid var(--accent-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 25px;
+            top: 25px;
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 80px 25px 25px;
+        }
+
+        .nav-links li {
+            margin: 20px 0;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 12px 18px;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .content {
+            padding: 30px;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(22, 33, 62, 0.8);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            margin-top: 20px;
+        }
+
+        .content.shifted {
+            margin-left: var(--sidebar-width);
+        }
+
+        h1 {
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            color: var(--accent-color);
+            margin: 25px 0 15px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 8px;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #3498db;
+            margin: 20px 0 10px;
+            font-size: 1.4em;
+        }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        /* Стили для карточек сюжета */
+        .story-concept {
+            display: flex;
+            align-items: flex-start;
+            gap: 25px;
+            margin: 30px 0;
+            background: rgba(44, 62, 80, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .story-concept:hover {
+            transform: translateX(5px);
+        }
+
+        .story-image-container {
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .story-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 3px solid var(--accent-color);
+            background: #2c3e50;
+            box-shadow: 0 0 0 2px #f39c12, 0 0 15px rgba(231, 76, 60, 0.5);
+            transition: all 0.3s ease;
+        }
+
+        .story-concept:hover .story-image {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 2px #f39c12, 0 0 25px rgba(231, 76, 60, 0.7);
+        }
+
+        .story-info {
+            flex: 1;
+        }
+
+        .story-title {
+            color: #f39c12;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1.6em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .story-subtitle {
+            color: #bdc3c7;
+            font-size: 1.2em;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        .story-description {
+            font-size: 1.1em;
+            color: #ecf0f1;
+            line-height: 1.7;
+        }
+
+        /* Стили для карточек персонажей */
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin: 30px 0;
+        }
+
+        .character-card {
+            background: rgba(44, 62, 80, 0.7);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid rgba(231, 76, 60, 0.3);
+            transition: transform 0.3s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .character-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-color);
+        }
+
+        .character-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 15px;
+        }
+
+        .character-image {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid var(--accent-color);
+            background: #2c3e50;
+            box-shadow: 0 0 0 2px #f39c12, 0 0 10px rgba(231, 76, 60, 0.5);
+        }
+
+        .character-name {
+            color: #f39c12;
+            font-weight: bold;
+            font-size: 1.4em;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .character-description {
+            line-height: 1.7;
+            color: #ecf0f1;
+        }
+
+        /* Стили для противников */
+        .enemy-types {
+            margin: 30px 0;
+        }
+
+        .enemy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .enemy-type {
+            background: rgba(52, 73, 94, 0.6);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid;
+            transition: transform 0.2s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .enemy-type:hover {
+            transform: translateY(-5px);
+        }
+
+        .enemy-name {
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #f39c12;
+        }
+
+        .enemy-description {
+            line-height: 1.6;
+            color: #ecf0f1;
+        }
+
+        /* Дополнительные стили */
+        .highlight {
+            color: #f39c12;
+            font-weight: bold;
+        }
+
+        .mechanic-details {
+            margin-left: 20px;
+            margin-top: 15px;
+        }
+
+        .mechanic-details li {
+            margin: 10px 0;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .mechanic-details li:before {
+            content: "•";
+            color: var(--accent-color);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Боковая панель -->
+    <div class="sidebar">
+        <ul class="nav-links">
+            <li><a href="#">Главная</a></li>
+            <li><a href="#">Грешники</a></li>
+            <li><a href="#">Канто</a></li>
+            <li><a href="#">Лоре</a></li>
+            <li><a href="#">Геймплей</a></li>
+            <li><a href="#">Начало игры</a></li>
+        </ul>
+    </div>
+
+<body>
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="prequels.html">Приквелы и Лор</a></li>
+            <li><a href="beginning.html">Начало игры</a></li>
+            <li><a href="sinners.html">Грешники</a></li>
+            <li><a href="gameplay.html">Геймплей</a></li>
+        </ul>
+    </div>
+
+    <!-- Основной контент -->
+    <div class="content">
+        <h1>Начало игры и краткий экскурс</h1>
+
+        <!-- Пролог -->
+        <div class="story-concept">
+            <div class="story-image-container">
+                <img src="./Images/Character/Dante.png" alt="Пробуждение Данте" class="story-image">
+            </div>
+            <div class="story-info">
+                <div class="story-title">Пролог: Пробуждение</div>
+                <div class="story-subtitle">"Голова... где моя голова?"</div>
+                <div class="story-description">
+                    <p>Главный герой пробуждается без воспоминаний о том, кто он. Перед ним предстают люди, яростно желающие оторвать его голову... которой уже и нет. В этот критический момент в толпу врезается автобус.</p>
+                    <p>Из автобуса выходит <span class="highlight">основной состав будущей команды</span> - 12 грешников, которые поочерёдно представляются перед героем, называя его <span class="highlight">Данте</span> и объясняя, что он их менеджер.</p>
+                    <p>Фауст, одна из грешниц, заставляет его быстро заключить с ними договор, после чего они вступают в бой, умирая так же быстро, как и появились.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вмешательство Вергилия -->
+        <div class="story-concept">
+            <div class="story-image-container">
+                <img src="./Images/Background/HellGate.png" alt="Вергилий спасает Данте" class="story-image">
+            </div>
+            <div class="story-info">
+                <div class="story-title">Появление Проводника</div>
+                <div class="story-subtitle">"Ты будешь платить болью"</div>
+                <div class="story-description">
+                    <p>В этот момент из автобуса выходит <span class="highlight">Вергилий</span> - наш проводник. Он безжалостно убивает четверых нападавших, а последнего лишает рук, оставляя в живых в качестве предупреждения остальным.</p>
+                    <p>Вергилий объясняет герою, что если он повернёт стрелки часов, то грешники воскреснут. Данте делает это почти инстинктивно, не понимая как, и оказывается перед гигантскими вратами. Он толкает их, и на его удивление они открываются.</p>
+                    <p>Однако возвращение в реальный мир сопровождается <span class="highlight">болью</span> - такова цена его силы. Он испытывает боль тех, кого восстанавливает.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вторая встреча -->
+        <div class="story-concept">
+            <div class="story-image-container">
+                <img src="./Images/Background/Goldenbough.png" alt="Вторая встреча с грешниками" class="story-image">
+            </div>
+            <div class="story-info">
+                <div class="story-title">Миссия определена</div>
+                <div class="story-subtitle">Сбор Золотых Ветвей</div>
+                <div class="story-description">
+                    <p>Вергилий объясняет задачу команды - <span class="highlight">сбор золотых ветвей</span> по различным секциям корпорации "Лоботомия".</p>
+                    <p>Данте становится связующим звеном между грешниками и компанией. В случае неудачи ответственность с "увольнением" будет нести именно он. При этом Данте даже не представляет, кто он, и не обладает никакими боевыми навыками.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Канто 1 -->
+        <div class="story-concept">
+            <div class="story-image-container">
+                <img src="./Images/Background/TheWarIsEnd.png" alt="Канто 1: Изгой" class="story-image">
+            </div>
+            <div class="story-info">
+                <div class="story-title">Канто 1: Изгой</div>
+                <div class="story-subtitle">Первое испытание</div>
+                <div class="story-description">
+                    <p>Автобус отправляется в один из отделов корпорации, где команда вынуждена спуститься в одну из бывших лабораторий лоботомии.</p>
+                    <p>Игроки знакомятся с базовыми механиками:</p>
+                    <ul class="mechanic-details">
+                        <li><span class="highlight">Бой</span> - система боя и синергии грехов между грешниками</li>
+                        <li><span class="highlight">Исследование</span> - изучение локаций и эго гифты</li>
+                        <li><span class="highlight">Взаимодействие</span> - работа с подземельями и событиями</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Подземелья -->
+        <div class="story-concept">
+            <div class="story-image-container">
+                <img src="./Images/Background/Dungeon.png" alt="Система подземелий" class="story-image">
+            </div>
+            <div class="story-info">
+                <div class="story-title">Подземелья</div>
+                <div class="story-subtitle">Путь без возврата</div>
+                <div class="story-description">
+                    <p>Подземелья представляют собой последний этап канто - структуру с возможностью выбора пути, но без возможности вернуться назад.</p>
+                    <p>Внутри можно найти различные события, успех которых определяется монеткой определённого греха (чаще всего выбирается грех, посвящённый персонажу канто).</p>
+                    <p>Подземелья раскрывают конец и основную суть предыстории персонажа, часто представляя собой <span class="highlight">главную боль грешника</span>, с которой срезонировала ветвь.</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Знакомство с главными персонажами</h2>
+        <div class="character-grid">
+            <div class="character-card">
+                <div class="character-header">
+                    <img src="./Images/Character/Dante.png" alt="Данте" class="character-image">
+                    <div class="character-name">Данте</div>
+                </div>
+                <div class="character-description">
+                    Менеджер и управляющий грешников. Обладает способностью воскрешать их после смерти. Имеет часы судного дня вместо головы.
+                </div>
+            </div>
+            <div class="character-card">
+                <div class="character-header">
+                    <img src="./Images/Character/vergilius.png" alt="Вергилий" class="character-image">
+                    <div class="character-name">Вергилий</div>
+                </div>
+                <div class="character-description">
+                    Проводник и основная связь с корпорацией. Дает задания грешникам и контролирует их миссию по поиску Золотых ветвей.
+                </div>
+            </div>
+            <div class="character-card">
+                <div class="character-header">
+                    <img src="./Images/Character/Charon.png" alt="Харон" class="character-image">
+                    <div class="character-name">Харон</div>
+                </div>
+                <div class="character-description">
+                    Водитель автобуса. Двигается интуицией и всегда приезжает к цели. На удивление эффективен.
+                </div>
+            </div>
+        </div>
+
+        <h2>Первые противники</h2>
+        <div class="enemy-types">
+            <div class="enemy-grid">
+                <div class="enemy-type">
+                    <div class="enemy-name">Крысы</div>
+                    <div class="enemy-description">
+                        Обычные бандиты и преступники, населяющие округ города. Не представляют серьезной угрозы, но могут быть опасны в больших количествах.
+                    </div>
+                </div>
+                <div class="enemy-type">
+                    <div class="enemy-name">Синдикаты</div>
+                    <div class="enemy-description">
+                        Организованные преступные группировки, контролирующие различные территории Города. Обладают более лучшим вооружением и тактикой.
+                    </div>
+                </div>
+                <div class="enemy-type">
+                    <div class="enemy-name">Аномалии</div>
+                    <div class="enemy-description">
+                        Сверхъестественные существа, нарушающие законы реальности. Каждая аномалия обладает уникальными способностями и требует особого подхода.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+ <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            sidebar.classList.toggle('active');
+            content.classList.toggle('shifted');
+        }
+
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
+        });
+    </script>
+</body>
+</html>

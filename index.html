@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limbus Company - Главная</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1a1a2e;
+            --secondary-color: #16213e;
+            --accent-color: #e74c3c;
+            --text-color: #ecf0f1;
+            --sidebar-width: 280px;
+        }
+
+        body {
+            background: linear-gradient(rgba(15, 15, 26, 0.85), rgba(26, 26, 46, 0.9)), 
+                        url('./Images/Background/Background_city.png') no-repeat center center fixed;
+            background-size: cover;
+            color: var(--text-color);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: calc(-1 * var(--sidebar-width));
+            top: 0;
+            width: var(--sidebar-width);
+            height: 100vh;
+            background: rgba(26, 26, 46, 0.95);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            box-shadow: 3px 0 15px rgba(0,0,0,0.7);
+            border-right: 2px solid var(--accent-color);
+            backdrop-filter: blur(10px);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .toggle-btn {
+            position: fixed;
+            left: 25px;
+            top: 25px;
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            z-index: 1001;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+            background: #c0392b;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 80px 25px 25px;
+        }
+
+        .nav-links li {
+            margin: 20px 0;
+        }
+
+        .nav-links a {
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 12px 18px;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a:hover {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            transform: translateX(5px);
+        }
+
+        .content {
+            padding: 30px;
+            margin-left: 0;
+            transition: margin-left 0.3s ease;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: rgba(22, 33, 62, 0.8);
+            border-radius: 15px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            margin-top: 20px;
+        }
+
+        .content.shifted {
+            margin-left: var(--sidebar-width);
+        }
+
+        h1 {
+            color: var(--accent-color);
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            color: var(--accent-color);
+            margin: 25px 0 15px;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 8px;
+            font-size: 1.8em;
+        }
+
+        h3 {
+            color: #3498db;
+            margin: 20px 0 10px;
+            font-size: 1.4em;
+        }
+
+        p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+        }
+
+        .city-map {
+            width: 100%;
+            margin: 30px auto;
+            background: rgba(52, 73, 94, 0.6);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid var(--accent-color);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .district {
+            background: rgba(44, 62, 80, 0.7);
+            margin: 15px 0;
+            padding: 18px;
+            border-radius: 8px;
+            border-left: 6px solid var(--accent-color);
+            transition: transform 0.2s ease;
+            backdrop-filter: blur(3px);
+        }
+
+        .district:hover {
+            transform: translateX(5px);
+        }
+
+        .district strong {
+            color: #f39c12;
+            font-size: 1.1em;
+        }
+
+        .corporation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 25px 0;
+        }
+
+        .corporation-card {
+            background: rgba(44, 62, 80, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid rgba(52, 73, 94, 0.5);
+            backdrop-filter: blur(3px);
+            transition: transform 0.2s ease;
+        }
+
+        .corporation-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .corp-name {
+            color: #f39c12;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <button class="toggle-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="sidebar" id="sidebar">
+        <ul class="nav-links">
+            <li><a href="index.html">Главная</a></li>
+            <li><a href="prequels.html">Приквелы и Лор</a></li>
+            <li><a href="beginning.html">Начало игры</a></li>
+            <li><a href="sinners.html">Грешники</a></li>
+            <li><a href="gameplay.html">Геймплей</a></li>
+        </ul>
+    </div>
+
+    <div class="content" id="content">
+        <h1>Limbus Company - Главная</h1>
+        
+        <h2>Мир Limbus Company</h2>
+        <p>Вселенная Project Moon - это постапокалиптический мир, разделенный на 25 Районов, каждый из которых контролируется могущественной Корпорацией, обладающей уникальной Сингулярностью, передовой технологией, дающей невероятные возможности.</p>
+
+        <div class="city-map">
+            <h2>Карта Города - 25 Районов</h2>
+            
+            <h3>Ключевые Районы:</h3>
+            
+            <div class="district">
+                <strong>Район 4 - D Corp:</strong> В округе проживает большое количество старых членов G Corp. Известен своими традициями и наследием.
+            </div>
+
+            <div class="district">
+                <strong>Район 9 - I Corp:</strong> Здесь жили Роланд и Анжелика из Library of Ruina. Место события аномалии "Пианист", трагического происшествия, связанного с музыкой.
+            </div>
+
+            <div class="district">
+                <strong>Район 10 - J Corp:</strong> Решения и ценности людей определяются случайными "Колесами фортуны". Вещество "Желание" служит основной валютой.
+            </div>
+
+            <div class="district">
+                <strong>Район 14 - N Corp:</strong> Одна из основных антагонистических группировок в сюжете Limbus Company. Известны своей идеологией и жестокостью к любым существам внедряющим в себя импланты.
+            </div>
+
+            <div class="district">
+                <strong>Район 18 - R Corp:</strong> Специализируется на производстве клонированных суперсолдат через выборочный отбор. Известны своими штурмовыми отрядами.
+            </div>
+
+            <div class="district">
+                <strong>Район 19 - S Corp:</strong> Ранее дом синдиката "Родословная клинка". Архитектура напоминает корейские святилища, сохраняя традиционный стиль.
+            </div>
+
+            <div class="district">
+                <strong>Район 20 - T Corp:</strong> Контролирует время благодаря сотрудничеству с W Corp. Их технологии манипуляции временем уникальны.
+            </div>
+
+            <div class="district">
+                <strong>Район 22 - V Corp:</strong> Имеет прямое отношение к Вергилию. Занимает особое положение в иерархии Корпораций.
+            </div>
+
+            <div class="district">
+                <strong>Район 23 - W Corp:</strong> Крупный технологический центр, известный поездами Варп, обеспечивающими почти мгновенную телепортацию.
+            </div>
+             <div class="district">
+                <div class="corp-name">Район 6 - F Corp </div>
+                <p>Могут открыть что угодно, включая концептуальные уровни. Их технологии работают с фундаментальными понятиями доступа.</p>
+            </div>
+
+             <div class="district">
+                <div class="corp-name">Район 7 - G Corp</div>
+                <p>Сферы, управляющие гравитацией. Технологии контроля гравитационных полей.</p>
+            </div>
+
+             <div class="district">
+                <div class="corp-name">Район 10 - J Corp</div>
+                <p>Могут заблокировать что угодно, включая концептуальные уровни. Абсолютные технологии блокировки.</p>
+            </div>
+
+             <div class="district">
+                <div class="corp-name">Район 11 - K Corp</div>
+                <p>Зелёная целебная жидкость, исцеляющая даже смертельные раны. Технология почти мгновенной регенерации.</p>
+            </div>
+
+             <div class="district">
+                <div class="corp-name">Район 21 - U Corp</div>
+                <p>Резонансный камертон - соединение объектов как единого целого с сохранением функций и разъединение ранее соединённого.</p>
+            </div>
+        </div>
+
+        <h2>Основная концепция</h2>
+        <p>Limbus Company следует за командой "Грешников", личностей, основанных на литературных персонажах, которые работают на таинственную компанию по сбору Золотых ветвей - артефактов, способных изменить реальность.</p>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const content = document.getElementById('content');
+            sidebar.classList.toggle('active');
+            content.classList.toggle('shifted');
+        }
+
+        document.addEventListener('click', function(event) {
+            const sidebar = document.getElementById('sidebar');
+            const toggleBtn = document.querySelector('.toggle-btn');
+            
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+                toggleSidebar();
+            }
+        });
+    </script>
+</body>
+</html>
